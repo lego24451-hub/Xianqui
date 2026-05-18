@@ -3,44 +3,32 @@ package xianqui;
 import javax.swing.*;
 import java.awt.*;
 
-public class MiCuenta extends JFrame {
+public class PanelCuenta extends JPanel {
 
-    private static final Color COLOR_FONDO = new Color(0x0A0400);
-    private static final Color COLOR_DORADO = new Color(0xD4A030);
-    private static final Color COLOR_DORADO_TENUE = new Color(0x5A3A12);
+    private static final Color COLOR_FONDO = PanelInicio.COLOR_FONDO;
+    private static final Color COLOR_DORADO = PanelInicio.COLOR_DORADO;
+    private static final Color COLOR_DORADO_TENUE = PanelInicio.COLOR_DORADO_TENUE;
 
-    private final Player player;
-    private final MenuPrincipal menuPrincipal;
-    private final MenuInicio  menuInicio;
+    private final Player   player;
+    private final AppFrame appFrame;
     private final IStorage almacenamiento = StorageManager.getInstance();
 
-    public MiCuenta(Player player, MenuPrincipal menuPrincipal, MenuInicio menuInicio) {
-        super("Mi Cuenta - " + player.getUsername());
-        this.player = player;
-        this.menuPrincipal = menuPrincipal;
-        this.menuInicio = menuInicio;
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
+    public PanelCuenta(Player player, AppFrame appFrame) {
+        this.player   = player;
+        this.appFrame = appFrame;
+        setBackground(COLOR_FONDO);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(BorderFactory.createEmptyBorder(28, 50, 28, 50));
         construirInterfaz();
-        pack();
-        setLocationRelativeTo(menuPrincipal);
     }
 
     private void construirInterfaz() {
-        JPanel panelRaiz = new JPanel();
-        panelRaiz.setBackground(COLOR_FONDO);
-        panelRaiz.setLayout(new BoxLayout(panelRaiz, BoxLayout.Y_AXIS));
-        panelRaiz.setBorder(BorderFactory.createEmptyBorder(28, 50, 28, 50));
-
-        panelRaiz.add(MenuPrincipal.crearEtiquetaCentrada(
-            "MI CUENTA",
-            new Font("SansSerif", Font.BOLD, 18),
-            COLOR_DORADO));
-        panelRaiz.add(Box.createVerticalStrut(20));
-
-        JPanel panelInformacion = new JPanel(new GridLayout(0, 2, 12, 8));
-        panelInformacion.setBackground(COLOR_FONDO);
-        panelInformacion.setBorder(BorderFactory.createTitledBorder(
+        add(PanelInicio.crearEtiqueta(
+            "MI CUENTA", new Font("SansSerif", Font.BOLD, 18), COLOR_DORADO));
+        add(Box.createVerticalStrut(20));
+        JPanel panelInfo = new JPanel(new GridLayout(0, 2, 12, 8));
+        panelInfo.setBackground(COLOR_FONDO);
+        panelInfo.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(new Color(0xB86E10), 1),
             "Información del jugador",
             javax.swing.border.TitledBorder.LEFT,
@@ -48,137 +36,128 @@ public class MiCuenta extends JFrame {
             new Font("SansSerif", Font.BOLD, 12),
             COLOR_DORADO));
 
-        agregarInfoAlPanel(panelInformacion, "Username:", player.getUsername());
-        agregarInfoAlPanel(panelInformacion, "Puntos:", String.valueOf(player.getPuntos()));
-        agregarInfoAlPanel(panelInformacion, "Fecha de ingreso:", player.getFechaIngreso());
-        agregarInfoAlPanel(panelInformacion, "Estado:", player.isActivo() ? "Activo" : "Inactivo");
+        agregarInfo(panelInfo, "Username:", player.getUsername());
+        agregarInfo(panelInfo, "Puntos:",String.valueOf(player.getPuntos()));
+        agregarInfo(panelInfo, "Fecha de ingreso:", player.getFechaIngreso());
+        agregarInfo(panelInfo, "Estado:", player.isActivo() ? "Activo" : "Inactivo");
 
-        panelRaiz.add(panelInformacion);
-        panelRaiz.add(Box.createVerticalStrut(22));
+        add(panelInfo);
+        add(Box.createVerticalStrut(22));
 
-        JButton botonCambiarPassword = menuInicio.crearBoton("Cambiar Password");
-        JButton botonEliminarCuenta  = new JButton("Eliminar mi Cuenta");
-        aplicarEstiloBotonPeligro(botonEliminarCuenta);
+        JButton botonVolver   = PanelInicio.crearBoton("← Volver");
+        JButton botonCambiar  = PanelInicio.crearBoton("Cambiar Password");
+        JButton botonEliminar = PanelInicio.crearBotonPeligro("Eliminar mi Cuenta");
 
-        botonCambiarPassword.addActionListener(evento -> mostrarCambiarPassword());
-        botonEliminarCuenta.addActionListener (evento -> mostrarEliminarCuenta());
+        botonVolver.addActionListener  (e -> appFrame.mostrarMenu(player));
+        botonCambiar.addActionListener (e -> mostrarCambiarPassword());
+        botonEliminar.addActionListener(e -> mostrarEliminarCuenta());
 
-        panelRaiz.add(botonCambiarPassword);
-        panelRaiz.add(Box.createVerticalStrut(10));
-        panelRaiz.add(botonEliminarCuenta);
-
-        setContentPane(panelRaiz);
+        add(botonVolver);
+        add(Box.createVerticalStrut(8));
+        add(botonCambiar);
+        add(Box.createVerticalStrut(10));
+        add(botonEliminar);
     }
 
-    
     private void mostrarCambiarPassword() {
-        JDialog dialogo = new JDialog(this, "Cambiar Password", true);
+        JDialog dialogo = new JDialog(appFrame, "Cambiar Password", true);
+        JPanel panel    = PanelInicio.crearPanelFormulario();
 
-        JPanel panelFormulario = new JPanel(new GridBagLayout());
-        panelFormulario.setBackground(COLOR_FONDO);
-        panelFormulario.setBorder(BorderFactory.createEmptyBorder(24, 32, 24, 32));
+        JPasswordField campoActual = PanelInicio.crearCampoContrasena();
+        JPasswordField campoNuevo  = PanelInicio.crearCampoContrasena();
+        JLabel error               = PanelInicio.crearEtiquetaError();
 
-        JPasswordField campoPasswordActual = menuInicio.crearCampoContrasena();
-        JPasswordField campoPasswordNuevo  = menuInicio.crearCampoContrasena();
-        JLabel etiquetaError = menuInicio.crearEtiquetaError();
+        PanelInicio.agregarFilaContrasena(panel, 0, "Password actual:", campoActual);
+        PanelInicio.agregarFilaContrasena(panel, 1, "Nuevo password:",  campoNuevo);
 
-        menuInicio.agregarFilaFormulario(panelFormulario, 0, "Password actual:", campoPasswordActual);
-        menuInicio.agregarFilaFormulario(panelFormulario, 1, "Nuevo password (5 chars):", campoPasswordNuevo);
-        menuInicio.agregarComponenteEnFila(panelFormulario, 2, etiquetaError);
+        
+        JLabel hint = new JLabel("Mín. 5 chars · mayúscula · minúscula · número");
+        hint.setForeground(PanelInicio.COLOR_DORADO_TENUE);
+        hint.setFont(new Font("SansSerif", Font.PLAIN, 10));
+        PanelInicio.agregarComponenteEnFila(panel, 2, hint);
 
-        JButton botonConfirmar = menuInicio.crearBoton("Confirmar");
-        menuInicio.agregarComponenteEnFila(panelFormulario, 3, botonConfirmar);
+        PanelInicio.agregarComponenteEnFila(panel, 3, error);
 
-        botonConfirmar.addActionListener(evento -> {
-            String passwordActual = new String(campoPasswordActual.getPassword());
-            String passwordNuevo  = new String(campoPasswordNuevo.getPassword());
+        JButton boton = PanelInicio.crearBoton("Confirmar");
+        PanelInicio.agregarComponenteEnFila(panel, 4, boton);
 
-            if (!passwordActual.equals(player.getPassword())) {
-                etiquetaError.setText("Password actual incorrecto.");
+        boton.addActionListener(e -> {
+            String actual = new String(campoActual.getPassword());
+            String nuevo  = new String(campoNuevo.getPassword());
+
+            if (!actual.equals(player.getPassword())) {
+                error.setText("Password actual incorrecto.");
                 return;
             }
-            if (passwordNuevo.length() != 5) {
-                etiquetaError.setText("El nuevo password debe tener exactamente 5 caracteres.");
+            String errorPassword = PanelInicio.validarPassword(nuevo);
+            if (errorPassword != null) {
+                error.setText(errorPassword);
                 return;
             }
-            player.setPassword(passwordNuevo);
+            player.setPassword(nuevo);
             almacenamiento.guardarPlayer(player);
-            JOptionPane.showMessageDialog(dialogo,
-                "Password cambiado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(dialogo, "Password cambiado exitosamente.", "Éxito",
+                JOptionPane.INFORMATION_MESSAGE);
             dialogo.dispose();
         });
 
-        dialogo.setContentPane(panelFormulario);
-        dialogo.pack();
-        dialogo.setLocationRelativeTo(this);
-        dialogo.setVisible(true);
+        mostrarDialogo(dialogo, panel);
     }
 
     private void mostrarEliminarCuenta() {
-        JDialog dialogo = new JDialog(this, "Eliminar Cuenta", true);
+        JDialog dialogo = new JDialog(appFrame, "Eliminar Cuenta", true);
+        JPanel panel    = PanelInicio.crearPanelFormulario();
 
-        JPanel panelFormulario = new JPanel(new GridBagLayout());
-        panelFormulario.setBackground(COLOR_FONDO);
-        panelFormulario.setBorder(BorderFactory.createEmptyBorder(24, 32, 24, 32));
-
-        JLabel etiquetaAdvertencia = new JLabel(
-            "Esta acción es irreversible.<br>Ingresa tu password para confirmar.",
+        JLabel advertencia = new JLabel(
+            "<html>Esta acción es irreversible.<br>Ingresa tu password para confirmar.</html>",
             SwingConstants.CENTER);
-        etiquetaAdvertencia.setForeground(new Color(0xFF5533));
-        etiquetaAdvertencia.setFont(new Font("SansSerif", Font.BOLD, 12));
+        advertencia.setForeground(new Color(0xFF5533));
+        advertencia.setFont(new Font("SansSerif", Font.BOLD, 12));
 
-        JPasswordField campoPassword = menuInicio.crearCampoContrasena();
-        JLabel etiquetaError = menuInicio.crearEtiquetaError();
+        JPasswordField campoClave = PanelInicio.crearCampoContrasena();
+        JLabel error = PanelInicio.crearEtiquetaError();
 
-        menuInicio.agregarComponenteEnFila(panelFormulario, 0, etiquetaAdvertencia);
-        menuInicio.agregarFilaFormulario  (panelFormulario, 1, "Password:", campoPassword);
-        menuInicio.agregarComponenteEnFila(panelFormulario, 2, etiquetaError);
+        PanelInicio.agregarComponenteEnFila(panel, 0, advertencia);
+        PanelInicio.agregarFilaContrasena  (panel, 1, "Password:", campoClave);
+        PanelInicio.agregarComponenteEnFila(panel, 2, error);
 
-        JButton botonEliminarDefinitivo = new JButton("Eliminar definitivamente");
-        aplicarEstiloBotonPeligro(botonEliminarDefinitivo);
-        menuInicio.agregarComponenteEnFila(panelFormulario, 3, botonEliminarDefinitivo);
+        JButton boton = PanelInicio.crearBotonPeligro("Eliminar definitivamente");
+        PanelInicio.agregarComponenteEnFila(panel, 3, boton);
 
-        botonEliminarDefinitivo.addActionListener(evento -> {
-            String passwordIngresado = new String(campoPassword.getPassword());
-            if (!passwordIngresado.equals(player.getPassword())) {
-                etiquetaError.setText("Password incorrecto.");
+        boton.addActionListener(e -> {
+            String ingresado = new String(campoClave.getPassword());
+            if (!ingresado.equals(player.getPassword())) {
+                error.setText("Password incorrecto.");
                 return;
             }
             almacenamiento.eliminarPlayer(player.getUsername());
-            JOptionPane.showMessageDialog(dialogo,
-                "Cuenta eliminada correctamente.", "Cuenta eliminada", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(dialogo, "Cuenta eliminada correctamente.",
+                "Cuenta eliminada", JOptionPane.INFORMATION_MESSAGE);
             dialogo.dispose();
-            dispose();
-            menuPrincipal.logout();
+            appFrame.mostrarInicio();
         });
 
-        dialogo.setContentPane(panelFormulario);
+        mostrarDialogo(dialogo, panel);
+    }
+
+    private void mostrarDialogo(JDialog dialogo, JPanel contenido) {
+        dialogo.setContentPane(contenido);
+        dialogo.setResizable(false);
         dialogo.pack();
-        dialogo.setLocationRelativeTo(this);
+        dialogo.setLocationRelativeTo(appFrame);
         dialogo.setVisible(true);
     }
-    private void agregarInfoAlPanel(JPanel panel, String clave, String valor) {
-        JLabel etiquetaClave = new JLabel(clave);
-        etiquetaClave.setForeground(COLOR_DORADO_TENUE);
-        etiquetaClave.setFont(new Font("SansSerif", Font.BOLD, 12));
 
-        JLabel etiquetaValor = new JLabel(valor);
-        etiquetaValor.setForeground(COLOR_DORADO);
-        etiquetaValor.setFont(new Font("SansSerif", Font.PLAIN, 12));
+    private void agregarInfo(JPanel panel, String clave, String valor) {
+        JLabel k = new JLabel(clave);
+        k.setForeground(COLOR_DORADO_TENUE);
+        k.setFont(new Font("SansSerif", Font.BOLD, 12));
 
-        panel.add(etiquetaClave);
-        panel.add(etiquetaValor);
-    }
-    private void aplicarEstiloBotonPeligro(JButton boton) {
-        boton.setFont(new Font("SansSerif", Font.BOLD, 13));
-        boton.setBackground(new Color(0x7A1414));
-        boton.setForeground(new Color(0xFFCCCC));
-        boton.setFocusPainted(false);
-        boton.setBorderPainted(false);
-        boton.setOpaque(true);
-        boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        boton.setBorder(BorderFactory.createEmptyBorder(10, 28, 10, 28));
-        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        boton.setMaximumSize(new Dimension(300, 44));
+        JLabel v = new JLabel(valor);
+        v.setForeground(COLOR_DORADO);
+        v.setFont(new Font("SansSerif", Font.PLAIN, 12));
+
+        panel.add(k);
+        panel.add(v);
     }
 }

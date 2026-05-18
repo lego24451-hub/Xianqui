@@ -189,7 +189,7 @@ public class GameState {
         turnoActual = turnoActual.opposite();
         if (sinMovimientosDisponibles(turnoActual)) {
             juegoTerminado = true;
-            ganador        = turnoActual.opposite();
+            ganador = turnoActual.opposite();
         }
     }
 

@@ -4,36 +4,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Reportes extends JFrame {
+public class PanelReportes extends JPanel {
 
-    private static final Color COLOR_FONDO = new Color(0x0A0400);
-    private static final Color COLOR_DORADO = new Color(0xD4A030);
-    private static final Color COLOR_DORADO_TENUE = new Color(0x5A3A12);
+    private static final Color COLOR_FONDO        = PanelInicio.COLOR_FONDO;
+    private static final Color COLOR_DORADO       = PanelInicio.COLOR_DORADO;
+    private static final Color COLOR_DORADO_TENUE = PanelInicio.COLOR_DORADO_TENUE;
 
     private final Player   jugadorLogueado;
+    private final AppFrame appFrame;
     private final IStorage almacenamiento = StorageManager.getInstance();
 
-    public Reportes(Player jugador, MenuPrincipal menuPrincipal) {
-        super("Reportes");
+    public PanelReportes(Player jugador, AppFrame appFrame) {
         this.jugadorLogueado = jugador;
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
+        this.appFrame        = appFrame;
+        setBackground(COLOR_FONDO);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(BorderFactory.createEmptyBorder(28, 50, 28, 50));
         construirInterfaz();
-        pack();
-        setLocationRelativeTo(menuPrincipal);
     }
 
     private void construirInterfaz() {
-        JPanel panelRaiz = new JPanel();
-        panelRaiz.setBackground(COLOR_FONDO);
-        panelRaiz.setLayout(new BoxLayout(panelRaiz, BoxLayout.Y_AXIS));
-        panelRaiz.setBorder(BorderFactory.createEmptyBorder(28, 50, 28, 50));
-
-        panelRaiz.add(MenuPrincipal.crearEtiquetaCentrada(
-            "REPORTES",
-            new Font("SansSerif", Font.BOLD, 18),
-            COLOR_DORADO));
-        panelRaiz.add(Box.createVerticalStrut(20));
+        add(PanelInicio.crearEtiqueta(
+            "REPORTES", new Font("SansSerif", Font.BOLD, 18), COLOR_DORADO));
+        add(Box.createVerticalStrut(20));
 
         JTabbedPane pestanas = new JTabbedPane();
         pestanas.setBackground(COLOR_FONDO);
@@ -43,8 +36,12 @@ public class Reportes extends JFrame {
         pestanas.addTab("Ranking Jugadores",    construirPanelRanking());
         pestanas.addTab("Mis Últimas Partidas", construirPanelLogs());
 
-        panelRaiz.add(pestanas);
-        setContentPane(panelRaiz);
+        add(pestanas);
+        add(Box.createVerticalStrut(16));
+
+        JButton botonVolver = PanelInicio.crearBoton("← Volver");
+        botonVolver.addActionListener(e -> appFrame.mostrarMenu(jugadorLogueado));
+        add(botonVolver);
     }
 
     private JPanel construirPanelRanking() {
@@ -80,7 +77,6 @@ public class Reportes extends JFrame {
         return panel;
     }
 
-    
     private void ordenarPorPuntosRecursivo(ArrayList<Player> lista, int tamano) {
         if (tamano <= 1) return;
         for (int indice = 0; indice < tamano - 1; indice++) {

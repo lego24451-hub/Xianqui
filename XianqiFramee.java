@@ -12,7 +12,7 @@ public class XianqiFramee extends JFrame {
         setResizable(false);
 
         GameState estadoJuego= new GameState();
-        PanelXianqui panelJuego  = new PanelXianqui(estadoJuego);
+        PanelXianqui panelJuego = new PanelXianqui(estadoJuego);
 
         JPanel panelTitulo= construirPanelTitulo();
         JPanel panelBotones = construirPanelBotones(panelJuego);
