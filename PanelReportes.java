@@ -6,17 +6,17 @@ import java.util.ArrayList;
 
 public class PanelReportes extends JPanel {
 
-    private static final Color COLOR_FONDO        = PanelInicio.COLOR_FONDO;
-    private static final Color COLOR_DORADO       = PanelInicio.COLOR_DORADO;
+    private static final Color COLOR_FONDO  = PanelInicio.COLOR_FONDO;
+    private static final Color COLOR_DORADO  = PanelInicio.COLOR_DORADO;
     private static final Color COLOR_DORADO_TENUE = PanelInicio.COLOR_DORADO_TENUE;
 
-    private final Player   jugadorLogueado;
+    private final Player jugadorLogueado;
     private final AppFrame appFrame;
     private final IStorage almacenamiento = StorageManager.getInstance();
 
     public PanelReportes(Player jugador, AppFrame appFrame) {
         this.jugadorLogueado = jugador;
-        this.appFrame        = appFrame;
+        this.appFrame  = appFrame;
         setBackground(COLOR_FONDO);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(28, 50, 28, 50));
@@ -55,7 +55,7 @@ public class PanelReportes extends JPanel {
         ordenarPorPuntosRecursivo(jugadoresActivos, jugadoresActivos.size());
 
         String[]   columnas = {"#", "Username", "Puntos"};
-        Object[][] datos    = new Object[jugadoresActivos.size()][3];
+        Object[][] datos = new Object[jugadoresActivos.size()][3];
         for (int indice = 0; indice < jugadoresActivos.size(); indice++) {
             datos[indice][0] = indice + 1;
             datos[indice][1] = jugadoresActivos.get(indice).getUsername();
@@ -90,7 +90,7 @@ public class PanelReportes extends JPanel {
     }
 
     private JPanel construirPanelLogs() {
-        JPanel panel = new JPanel(new BorderLayout(0, 10));
+        JPanel panel= new JPanel(new BorderLayout(0, 10));
         panel.setBackground(COLOR_FONDO);
         panel.setBorder(BorderFactory.createEmptyBorder(12, 8, 12, 8));
 

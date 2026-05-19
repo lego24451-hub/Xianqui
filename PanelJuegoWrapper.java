@@ -38,8 +38,10 @@ public class PanelJuegoWrapper extends JPanel {
         addKeyListener(new KeyAdapter() {
             @Override public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_U: panelJuego.undo();    break;
-                    case KeyEvent.VK_N: panelJuego.newGame(); break;
+                    case KeyEvent.VK_U: panelJuego.undo();  
+                    break;
+                    case KeyEvent.VK_N: panelJuego.newGame();
+                    break;
                 }
             }
         });

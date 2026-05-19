@@ -4,7 +4,7 @@ package xianqui;
 
 public class ReporteRetiro extends Reportes{
       public ReporteRetiro(Player ganador, Player retirado){
-        super(ganador, retirado, "Te has retirado de la partida"); 
+        super(ganador, retirado, "HAS PERDIDO POR RETIRO: " + retirado.getUsername()); 
         
       }
       

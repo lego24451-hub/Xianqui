@@ -5,7 +5,7 @@ public class ReportePerdedor extends Reportes{
     
     
     public ReportePerdedor(Player ganador, Player perdedor){
-        super(ganador, perdedor, "Has perdido la partida"); 
+        super(ganador, perdedor, "HAS PERDIDO LA PARTIDA: "  + perdedor.getUsername()); 
         
         
     }

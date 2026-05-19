@@ -26,7 +26,7 @@ public class StorageManager implements IStorage {
         return true;
     }
 
-    private boolean usernameExisteRecursivo(String username, int indice) {
+    private boolean usernameExisteRecursivo(String username, int indice) { //***************
         if (indice >= listaPlayers.size()) return false;
         if (listaPlayers.get(indice).getUsername().equalsIgnoreCase(username)) return true;
         return usernameExisteRecursivo(username, indice + 1);
@@ -43,7 +43,7 @@ public class StorageManager implements IStorage {
         return true;
     }
 
-    private int encontrarIndiceRecursivo(String username, int indice) {
+    private int encontrarIndiceRecursivo(String username, int indice) { //********************
         if (indice >= listaPlayers.size()) return -1;
         if (listaPlayers.get(indice).getUsername().equalsIgnoreCase(username)) return indice;
         return encontrarIndiceRecursivo(username, indice + 1);
